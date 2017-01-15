@@ -1,8 +1,13 @@
 class Currency
   attr_reader :amount, :code
-  def initialize(amount:, code:)
+  def initialize(amount:, **_)
+    symbols = {"$"=>'USD', "€"=>'EUR', "£"=>'GBP'}
     @amount = amount
-    @code = code
+    @code = _[:code]
+    if @code == nil
+      @code = symbols[@amount[0]]
+      @amount = amount[1..-1].to_i
+    end
   end
 
   def ==(other)
@@ -16,7 +21,7 @@ class Currency
 
   def -(other)
     raise RuntimeError.new('Different Currency Code Error') unless @code == other.code
-        Currency.new(amount: @amount - other.amount, code: @code)
+      Currency.new(amount: @amount - other.amount, code: @code)
   end
 
   def *(other)
