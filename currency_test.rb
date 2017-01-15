@@ -39,4 +39,11 @@ class CurrencyTest < Minitest::Test
       a - c
     end
   end
+
+  def test_multiply_currencies
+    a = Currency.new(amount: 5, code: 'USD')
+    b = Currency.new(amount: 10, code: 'USD')
+    assert a * 2 === b
+    assert a * 2.0 == b
+  end
 end

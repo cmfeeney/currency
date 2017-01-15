@@ -18,4 +18,8 @@ class Currency
     raise RuntimeError.new('Different Currency Code Error') unless @code == other.code
         Currency.new(amount: @amount - other.amount, code: @code)
   end
+
+  def *(other)
+    Currency.new(amount: @amount * other, code: @code)
+  end
 end
