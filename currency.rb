@@ -32,8 +32,3 @@ class Currency
     Currency.new(amount: @amount * value, code: @code)
   end
 end
-
-a = Currency.new(amount: 34, code: 'USD')
-b = Currency.new(amount: 34, code: 'USD')
-c = Currency.new(amount: 34, code: 'EUR')
-d = Currency.new(amount: 30, code: 'USD')
