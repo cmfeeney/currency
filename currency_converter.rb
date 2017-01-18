@@ -1,22 +1,20 @@
 require './currency.rb'
 
+class UnknownCurrencyCodeError < StandardError
+end
+
 class CurrencyConverter
-  attr_reader :USD, :EUR, :GBP, :curr_rates
-  def initialize(**_)
-    @USD = _[:USD]
-    @EUR = _[:EUR]
-    @GBP = _[:GBP]
-    @curr_rates = {'USD'=>@USD, 'EUR'=>@EUR, 'GBP'=>@GBP}
+  attr_reader :rates
+  def initialize(rates)
+    @rates = rates.collect{|k,v| [k.to_s, v]}.to_h
   end
 
-  def convert(a, code)
-    raise RuntimeError.new('Unknown Currency Code Error') unless curr_rates[a.code] != nil && curr_rates[code] != nil
-    if a.code == code
-      Currency.new(amount: a.amount, code: a.code)
-    elsif curr_rates[a.code] > curr_rates[code]
-      Currency.new(amount: a.amount * curr_rates[code], code: code)
+  def convert(obj, code)
+    raise UnknownCurrencyCodeError.new('That currency code is unknown') unless rates[obj.code] != nil && rates[code] != nil
+    if obj.code == code
+      Currency.new(amount: obj.amount, code: obj.code)
     else
-      Currency.new(amount: a.amount / curr_rates[a.code], code: code)
+      Currency.new(amount: (obj.amount * rates[code]) / rates[obj.code], code: code)
     end
   end
 end
