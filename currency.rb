@@ -1,12 +1,16 @@
+class DifferentCurrencyCodeError < StandardError
+end
+
 class Currency
   attr_reader :amount, :code
-  def initialize(amount:, **_)
+  def initialize(amount:, code: nil)
     symbols = {"$"=>'USD', "€"=>'EUR', "£"=>'GBP'}
-    @amount = amount
-    @code = _[:code]
-    if @code == nil
-      @code = symbols[@amount[0]]
-      @amount = amount[1..-1].to_i
+    if code
+      @code = code
+      @amount = amount
+    else
+      @code = symbols[amount[0]]
+      @amount = amount[1..-1].to_f
     end
   end
 
@@ -15,16 +19,16 @@ class Currency
   end
 
   def +(other)
-    raise RuntimeError.new('Different Currency Code Error') unless @code == other.code
-      Currency.new(amount: @amount + other.amount, code: @code)
+    raise DifferentCurrencyCodeError.new("These currencies don't have the same currency code") unless @code == other.code
+    Currency.new(amount: @amount + other.amount, code: @code)
   end
 
   def -(other)
-    raise RuntimeError.new('Different Currency Code Error') unless @code == other.code
-      Currency.new(amount: @amount - other.amount, code: @code)
+    raise DifferentCurrencyCodeError.new("These currencies don't have the same currency code") unless @code == other.code
+    Currency.new(amount: @amount - other.amount, code: @code)
   end
 
-  def *(other)
-    Currency.new(amount: @amount * other, code: @code)
+  def *(value)
+    Currency.new(amount: @amount * value, code: @code)
   end
 end
